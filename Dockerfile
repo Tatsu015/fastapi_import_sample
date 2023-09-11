@@ -14,14 +14,11 @@ RUN poetry install --no-dev
 RUN poetry export -f requirements.txt >> requirements.txt
 
 
-FROM python:3.11.4-slim-bullseye as runner
-
+FROM mcr.microsoft.com/playwright/python:v1.35.0-jammy as runtime
+EXPOSE 8080
 ENV PYTHONUNBUFFERED 1
-
 WORKDIR /src/app
-
 COPY --from=builder /code/requirements.txt /tmp/pip-tmp/
 RUN pip --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
     && rm -rf /tmp/pip-tmp
-
 COPY fastapi_import_sample ./fastapi_import_sample/
